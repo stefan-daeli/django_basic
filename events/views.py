@@ -6,6 +6,19 @@ from django.http import HttpResponseRedirect
 from .models import Event, Venue
 from .forms import VenueForm
 
+def search_venues(request):
+    if request.method == "POST":
+        searched = request.POST.get('searched')
+        venues = Venue.objects.filter(name__icontains=searched)
+        return render(request, 
+                      'events/search_venues.html',
+                      {'searched': searched,
+                       'venues': venues})
+    else:
+        return render(request, 
+                  'events/search_venues.html',
+                  {})
+
 def show_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     return render(request, 'events/show_venue.html',

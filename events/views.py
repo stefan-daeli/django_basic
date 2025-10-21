@@ -6,6 +6,27 @@ from django.http import HttpResponseRedirect
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
 from django.http import HttpResponse
+import csv
+
+def venue_csv(request):
+    response = HttpResponse(content_type='text/csv') #use csv not plain
+    response['Content-Disposition'] = 'attachment; filename=venues.csv'
+    # create a csv writer
+    writer = csv.writer(response)
+    venues = Venue.objects.all()
+    # add column headings to the csv file
+    writer.writerow(['Venue Name','Address','Zip Code','Phone','Web','Email'])
+    for venue in venues:
+        writer.writerow(
+            [venue.name ,
+             venue.address,
+             venue.zip_code,
+             venue.phone,
+             venue.web,
+             venue.email_address]
+        )
+    return response
+    
 
 # generate text file venue list
 def venue_text(request):
